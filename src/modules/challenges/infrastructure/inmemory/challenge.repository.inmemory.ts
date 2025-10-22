@@ -39,12 +39,15 @@ export class InMemoryChallengeRepository implements ChallengeRepository {
         const updated = new Challenge(
             existing.id,
             updates.title ?? existing.title,
-            updates.difficulty ?? existing.difficulty,
+            updates.description ?? existing.description,
             updates.tags ?? existing.tags,
+            updates.difficulty ?? existing.difficulty,
+            updates.state ?? existing.state,
             updates.timeLimit ?? existing.timeLimit,
             updates.memoryLimit ?? existing.memoryLimit,
-            updates.description ?? existing.description,
-            updates.status ?? existing.status
+            existing.createdAt,
+            new Date(),
+
         );
 
         this.challenges[index] = updated;

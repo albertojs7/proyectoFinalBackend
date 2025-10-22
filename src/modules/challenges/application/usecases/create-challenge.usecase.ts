@@ -1,5 +1,5 @@
 import { Injectable, Inject } from "@nestjs/common";
-import { Challenge } from "../../domain/challenge.entity";
+import { Challenge, ChallengeState } from "../../domain/challenge.entity";
 import { ChallengeRepository } from "../../domain/challenge.repository";
 import { CreateChallengeDTO } from "../dtos/create-challenge.dto";
 import { randomUUID } from "node:crypto";
@@ -17,11 +17,14 @@ export class CreateChallengeUseCase {
         const challenge = new Challenge(
             randomUUID(),
             title,
-            difficulty,
+            description,
             tags,
+            difficulty,
+            "DRAFT",
             timeLimit,
             memoryLimit,
-            description
+            new Date(),
+            new Date()
         );
         return this.challengeRepository.save(challenge);
     }

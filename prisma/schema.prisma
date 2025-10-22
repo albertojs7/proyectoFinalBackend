@@ -18,6 +18,18 @@ enum UserRole {
   ADMIN
 }
 
+enum DifficultyLevel {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ChallengeState {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
 model User {
   id         String       @id @default(cuid())
   name       String
@@ -27,6 +39,31 @@ model User {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   Submission Submission[]
+}
+ // el Challenge tiene que tener tags: string[],
+model Challenge {
+  id          String          @id @default(cuid())
+  title       String
+  description String
+  difficulty  DifficultyLevel
+  tags        String[]
+  timeLimit   Int
+  memoryLimit Int
+  state       ChallengeState @default(DRAFT)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  testCases   TestCase[]
+}
+
+model TestCase {
+  id          String   @id @default(cuid())
+  challengeId String
+  input       String
+  output      String
+  index       Int
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([challengeId, index])
 }
 
 model Submission {

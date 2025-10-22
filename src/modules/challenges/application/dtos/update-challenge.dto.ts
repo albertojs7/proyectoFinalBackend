@@ -1,5 +1,5 @@
 import { IsString, IsEnum, IsArray, IsNumber, IsNotEmpty, Min, IsOptional } from 'class-validator';
-import { DifficultyLevel, ChallengeStatus } from "../../domain/challenge.entity";
+import { DifficultyLevel, ChallengeState } from "../../domain/challenge.entity";
 import { CreateChallengeDTO } from './create-challenge.dto';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -10,7 +10,6 @@ export class UpdateChallengeDTO implements Partial<CreateChallengeDTO> {
     title?: string;
 
     @IsOptional()
-    @IsEnum(DifficultyLevel)
     difficulty?: DifficultyLevel;
 
     @IsOptional()
@@ -32,6 +31,5 @@ export class UpdateChallengeDTO implements Partial<CreateChallengeDTO> {
     description?: string;
 
     @IsOptional()
-    @IsEnum(ChallengeStatus)
-    status?: ChallengeStatus;
+    status?: ChallengeState;
 }

@@ -9,10 +9,12 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+      transformOptions: { enableImplicitConversion: true },
   }));
   const config = new DocumentBuilder()
     .setTitle('Backend')
-    .setVersion('1.0')
+    .setDescription('API para ')
+    .setVersion('1.7')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);

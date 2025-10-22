@@ -7,7 +7,7 @@ export class CreateChallengeDTO {
     @IsNotEmpty()
     title!: string;
 
-    @IsEnum(DifficultyLevel)
+    
     difficulty!: DifficultyLevel;
 
     @IsArray()
