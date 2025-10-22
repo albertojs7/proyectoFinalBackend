@@ -3,17 +3,7 @@ import { CreateUserDto } from '../application/dto/registerUser.dto';
 import { LoginUserDto } from '../application/dto/loginUser.dto';
 import { RegisterUserUseCase } from '../application/usecases/registerUser.usecase';
 import { LoginUserUseCase } from '../application/usecases/loginUser.usecase';
-import { ApiProperty, ApiTags } from "@nestjs/swagger";
-
-class createUserRequest {
-    @ApiProperty() name!: string;
-    @ApiProperty() email!: string;
-    @ApiProperty() password!: string
-}
-class loginUserRequest {
-    @ApiProperty() email!: string;
-    @ApiProperty() password!: string
-}
+import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -24,12 +14,12 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async register(@Body() body: createUserRequest) {
+  async register(@Body() body: CreateUserDto) {
     return await this.registerUserUseCase.execute(body);
   }
 
   @Post('login')
-  async login(@Body() body: loginUserRequest) {
+  async login(@Body() body: LoginUserDto) {
     return await this.loginUserUseCase.execute(body);
   }
 }
