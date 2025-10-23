@@ -24,4 +24,5 @@ export class AuthController {
   async login(@Body() body: LoginUserDto) {
     return await this.loginUserUseCase.execute(body);
   }
+
 }
