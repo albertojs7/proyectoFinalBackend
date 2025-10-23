@@ -18,16 +18,42 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: redisQueue
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
   backend:
     build: .
     container_name: appBack
     environment:
       DATABASE_URL: "postgresql://user:pass@db:5432/clean_nest"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      QUEUE_SUBMISSIONS: "submissions"
     ports:
       - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+
+  worker_submissions:
+    build: .
+    container_name: workerSubmissions
+    command: npm run start:worker
+    environment:
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      QUEUE_SUBMISSIONS: "submissions"
+    depends_on:
+      redis:
+        condition: service_started
     restart: unless-stopped
 
 volumes:
