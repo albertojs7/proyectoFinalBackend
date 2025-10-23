@@ -3,7 +3,7 @@ import { CreateUserDto } from '../application/dto/registerUser.dto';
 import { LoginUserDto } from '../application/dto/loginUser.dto';
 import { RegisterUserUseCase } from '../application/usecases/registerUser.usecase';
 import { LoginUserUseCase } from '../application/usecases/loginUser.usecase';
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 @ApiTags('auth')
 @Controller('auth')
