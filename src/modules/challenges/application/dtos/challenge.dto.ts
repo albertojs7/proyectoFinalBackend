@@ -42,6 +42,7 @@ export class CreateChallengeDto {
 
 export class UpdateChallengeDto extends PartialType(CreateChallengeDto) {
   @ApiProperty({ example: 'clg_12345', description: 'ID del challenge' })
+  @IsOptional()
   @IsString()
   id!: string;
 

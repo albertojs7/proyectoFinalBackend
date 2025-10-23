@@ -4,13 +4,13 @@ import { TEST_CASE_REPOSITORY } from "../../tokens";
 
 
 @Injectable()
-export class ListTestCaseUseCase {
+export class ListTestCaseByChallengeUseCase {
     constructor(
         @Inject(TEST_CASE_REPOSITORY) private readonly testCaseRepository: TestCaseRepository
     ) {}
 
-    async execute() : Promise <any> {
-        const testCases = await this.testCaseRepository.findAll();
+    async execute(challengeId: string) : Promise <any> {
+        const testCases = await this.testCaseRepository.findByChallengeId(challengeId);
         return testCases;
     }
 }

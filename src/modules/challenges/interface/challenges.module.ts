@@ -17,6 +17,9 @@ import { ListTestCaseUseCase } from "../application/usecases/test-cases/list-tes
 import { DeleteTestCaseUseCase } from "../application/usecases/test-cases/delete-test-case.uc";
 import test from "node:test";
 import { TestCaseController } from "./test-case.controller";
+import { ListTestCaseByChallengeUseCase } from "../application/usecases/test-cases/list-test-case-by-challenge.uc";
+import { ListChallengeByDificultyUseCase } from "../application/usecases/challenges/list-challenge-by-dificulty.us";
+import { ListChallengeByTagUseCase } from "../application/usecases/challenges/list-challenge-by-tag.uc";
 
 @Module({
     controllers: [ChallengesController, TestCaseController],
@@ -27,9 +30,9 @@ import { TestCaseController } from "./test-case.controller";
         //{provide: CHALLENGE_REPOSITORY, useClass: InMemoryChallengeRepository},
         CreateChallengeUseCase,UpdateChallengeUseCase,
         ListChallengesUseCase,DeleteChallengeUseCase,
-
+        ListChallengeByDificultyUseCase,ListChallengeByTagUseCase,
         CreateTestCaseUseCase,UpdateTestCaseUseCase,
-        ListTestCaseUseCase,DeleteTestCaseUseCase
+        ListTestCaseUseCase,DeleteTestCaseUseCase,ListTestCaseByChallengeUseCase
     ]
 })
 export class ChallengesModule {}

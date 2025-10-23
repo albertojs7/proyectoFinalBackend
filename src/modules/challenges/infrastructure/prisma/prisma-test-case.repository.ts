@@ -26,6 +26,14 @@ export class PrismaTestCaseRepository implements TestCaseRepository {
         );
     }
 
+    async findAll(): Promise<TestCase[]> {
+        const testCases = await this.prisma.testCase.findMany();
+        return testCases.map(
+            (tc) =>
+                new TestCase(tc.id, tc.challengeId, tc.index, tc.input, tc.output)
+        );
+    }
+
     async findByChallengeId(challengeId: string): Promise<TestCase[]> {
         const testCases = await this.prisma.testCase.findMany({
             where: { challengeId },

@@ -5,6 +5,8 @@ export interface TestCaseRepository {
 
   create(testCase: TestCase): Promise<TestCase>;
 
+  findAll(): Promise<TestCase[]>;
+
   findByChallengeId(challengeId: string): Promise<TestCase[]>;
 
   findById(id: string): Promise<TestCase | null>;
