@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
 import { User } from "../../domain/user.entity";
 import { LoginUserDto } from "../dto/loginUser.dto";
-import { emitWarning } from "process";
+import { UnauthorizedException } from '@nestjs/common';
 
 export class LoginUserUseCase {
     constructor(
@@ -14,11 +14,11 @@ export class LoginUserUseCase {
     async execute(input: LoginUserDto): Promise<{ token: string; user: User }> {
         const user = await this.userRepository.findByEmail(input.email)
         if (!user) {
-            throw new Error('Usuario no encontrado')
+            throw new UnauthorizedException('Usuario no encontrado')
         }
         const isValid = await bcrypt.compare(input.password, user.password)
         if (!isValid) {
-            throw new Error('Credenciales invalidas')
+            throw new UnauthorizedException('Credenciales invalidas')
         }
         const token = await this.jwtService.signAsync({
             id: user.id,

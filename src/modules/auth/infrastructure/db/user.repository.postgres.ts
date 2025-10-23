@@ -7,8 +7,8 @@ import { UserRepository } from '../../domain/user.repository';
 export class UserRepositoryPostgres implements UserRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByEmail(email: string): Promise<User | null> {
-    const userRecord = await this.prisma.user.findUnique({ where: { email } });
+  async findByEmail(emailinput: string): Promise<User | null> {
+    const userRecord = await this.prisma.user.findUnique({ where: { email : emailinput } });
     if (!userRecord) return null;
     return new User(
       userRecord.id,
