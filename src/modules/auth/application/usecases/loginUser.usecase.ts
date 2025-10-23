@@ -14,11 +14,11 @@ export class LoginUserUseCase {
     async execute(input: LoginUserDto): Promise<{ token: string; user: User }> {
         const user = await this.userRepository.findByEmail(input.email)
         if (!user) {
-            throw new UnauthorizedException('Usuario no encontrado')
+            throw new UnauthorizedException('User not found')
         }
         const isValid = await bcrypt.compare(input.password, user.password)
         if (!isValid) {
-            throw new UnauthorizedException('Credenciales invalidas')
+            throw new UnauthorizedException('Invalid credentials')
         }
         const token = await this.jwtService.signAsync({
             id: user.id,

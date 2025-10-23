@@ -4,7 +4,6 @@ import { ChallengesController } from "./challenges.controller";
 import { InMemoryChallengeRepository } from "../infrastructure/inmemory/challenge.repository.inmemory";
 import { CHALLENGE_REPOSITORY, TEST_CASE_REPOSITORY } from "../application/tokens";
 import { PrismaService } from "../../../shared/infrastructure/prisma.service";
-import { Prisma } from "@prisma/client";
 import { PrismaTestCaseRepository } from "../infrastructure/prisma/prisma-test-case.repository";
 import { PrismaChallengeRepository } from "../infrastructure/prisma/prisma-challenge.repository";
 import { CreateChallengeUseCase } from "../application/usecases/challenges/create-challenge.uc";

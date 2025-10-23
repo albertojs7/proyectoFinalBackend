@@ -21,16 +21,17 @@ export class ChallengesController {
     private readonly deleteChallenge: DeleteChallengeUseCase,
     ) {}
 
-   @Post()
-  @ApiOperation({ summary: 'Crea un nuevo challenge' })
+  @Post()
+  @ApiOperation({ summary: 'Creates a new challenge' })
   async create(@Body() dto: CreateChallengeDto) {
     return this.createChallenge.execute(dto);
   }
 
   @Get()
-    async list() {
-        return this.listChallenges.execute();
-    }
+  @ApiOperation({ summary: 'Lists all challenges' })
+  async list() {
+    return this.listChallenges.execute();
+  }
 //   @Get()
 //   async list(@Query('difficulty') difficulty?: DifficultyLevel, @Query('tag') tag?: string) {
 //     if (difficulty) return this.listByDifficulty.execute(difficulty);
@@ -44,11 +45,13 @@ export class ChallengesController {
 //   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Updates a challenge' })
   async update(@Param('id') id: string, @Body() dto: UpdateChallengeDto) {
     return this.updateChallenge.execute({ ...dto, id });
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Deletes a challenge' })
   async delete(@Param('id') id: string) {
     await this.deleteChallenge.execute(id);
     return { message: 'Challenge deleted successfully' };

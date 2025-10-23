@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsIn, IsInt, IsOptional, IsPositive, IsString, Min } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsIn, IsInt, IsOptional, IsPositive, IsString, min, Min } from "class-validator";
 import { DifficultyLevel, ChallengeState } from '../../domain/challenge.entity';
 import { Transform } from "class-transformer";
 import { ApiProperty, PartialType } from "@nestjs/swagger";
@@ -12,7 +12,7 @@ export class CreateChallengeDto {
   @IsString()
   title!: string;
 
-  @ApiProperty({ example: 'Implementa el algoritmo de búsqueda binaria' })
+  @ApiProperty({ example: 'Implementa el algoritmo de búsqueda binaria', description: 'Descripción del challenge' })
   @IsString()
   description!: string;
 
@@ -27,13 +27,13 @@ export class CreateChallengeDto {
   @IsIn(DifficultyValues)
   difficulty!: DifficultyLevel;
 
-  @ApiProperty({ example: 2, description: 'Tiempo límite (segundos)' })
+  @ApiProperty({ example: 2, description: 'Tiempo límite (segundos)', minimum: 1 })
   @IsInt()
   @IsPositive()
   @Min(1)
   timeLimit!: number;
 
-  @ApiProperty({ example: 256, description: 'Memoria límite (MB)' })
+  @ApiProperty({ example: 256, description: 'Memoria límite (MB)', minimum: 1 })
   @IsInt()
   @IsPositive()
   @Min(1)

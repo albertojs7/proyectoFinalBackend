@@ -14,11 +14,13 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @ApiOperation({ summary: 'Register a new user' })
   async register(@Body() body: CreateUserDto) {
     return await this.registerUserUseCase.execute(body);
   }
 
   @Post('login')
+  @ApiOperation({ summary: 'Login a user' })
   async login(@Body() body: LoginUserDto) {
     return await this.loginUserUseCase.execute(body);
   }
