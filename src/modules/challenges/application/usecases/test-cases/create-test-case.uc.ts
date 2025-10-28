@@ -1,5 +1,4 @@
-
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { TestCaseRepository } from '../../../domain/test-case.repository';
 import { CreateTestCaseDto } from '../../dtos/test-case.dto';
 import { TestCase } from '../../../domain/test-case.entity';

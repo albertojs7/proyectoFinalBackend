@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { ChallengesController } from "./challenges.controller";
-// import { CreateChallengeUseCase, UpdateChallengeUseCase, ListChallengesUseCase } from "../application/usecases";
 import { InMemoryChallengeRepository } from "../infrastructure/inmemory/challenge.repository.inmemory";
 import { CHALLENGE_REPOSITORY, TEST_CASE_REPOSITORY } from "../application/tokens";
 import { PrismaService } from "../../../shared/infrastructure/prisma.service";
@@ -14,7 +13,6 @@ import { CreateTestCaseUseCase } from "../application/usecases/test-cases/create
 import { UpdateTestCaseUseCase } from "../application/usecases/test-cases/update-test-case.uc";
 import { ListTestCaseUseCase } from "../application/usecases/test-cases/list-test-case.uc";
 import { DeleteTestCaseUseCase } from "../application/usecases/test-cases/delete-test-case.uc";
-import test from "node:test";
 import { TestCaseController } from "./test-case.controller";
 
 @Module({

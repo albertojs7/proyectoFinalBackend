@@ -97,17 +97,19 @@ export class PrismaChallengeRepository implements ChallengeRepository {
             where: { id },
         });
         if (!existing) return null;
+        
         const updated = await this.prisma.challenge.update({
             where: { id },
             data: {
                 title: updates.title ?? existing.title,
                 description: updates.description ?? existing.description,
                 tags: updates.tags ?? existing.tags,
-                difficulty:  updates.difficulty? { set: toPrismaDifficulty(updates.difficulty) }: undefined,
-
-                state:       updates.state
-                ? { set: toPrismaState(updates.state) }
-                : undefined,
+                difficulty: updates.difficulty 
+                    ? toPrismaDifficulty(updates.difficulty) 
+                    : existing.difficulty,
+                state: updates.state 
+                    ? toPrismaState(updates.state) 
+                    : existing.state,
                 timeLimit: updates.timeLimit ?? existing.timeLimit,
                 memoryLimit: updates.memoryLimit ?? existing.memoryLimit,
             },

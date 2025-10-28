@@ -9,8 +9,8 @@ import { ChallengeRepository } from "../../../domain/challenge.repository";
 export class UpdateChallengeUseCase {
     constructor(@Inject(CHALLENGE_REPOSITORY) private readonly challengeRepository: ChallengeRepository) {}
 
-    async execute(challenge: UpdateChallengeDto): Promise<Challenge> {
-        const existingChallenge = await this.challengeRepository.findById(challenge.id);
+    async execute(id: string, challenge: UpdateChallengeDto): Promise<Challenge> {
+        const existingChallenge = await this.challengeRepository.findById(id);
         if (!existingChallenge) {
             throw new Error('Challenge not found');
         }
@@ -20,7 +20,8 @@ export class UpdateChallengeUseCase {
         existingChallenge.difficulty = challenge.difficulty ?? existingChallenge.difficulty;
         existingChallenge.timeLimit = challenge.timeLimit ?? existingChallenge.timeLimit;
         existingChallenge.memoryLimit = challenge.memoryLimit ?? existingChallenge.memoryLimit;
-        const updatedChallenge = await this.challengeRepository.update(existingChallenge.id, existingChallenge);
+        existingChallenge.state = challenge.state ?? existingChallenge.state;
+        const updatedChallenge = await this.challengeRepository.update(id, existingChallenge);
         if (!updatedChallenge) {
             throw new Error('Failed to update challenge');
         }

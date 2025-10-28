@@ -41,10 +41,6 @@ export class CreateChallengeDto {
 }
 
 export class UpdateChallengeDto extends PartialType(CreateChallengeDto) {
-  @ApiProperty({ example: 'clg_12345', description: 'ID del challenge' })
-  @IsString()
-  id!: string;
-
   @ApiProperty({ enum: StateValues, required: false, enumName: 'ChallengeState' })
   @IsOptional()
   @Transform(({ value }) => (typeof value === 'string' ? value.toUpperCase().trim() : value))
@@ -52,15 +48,15 @@ export class UpdateChallengeDto extends PartialType(CreateChallengeDto) {
   state?: ChallengeState;
 }
 
-export interface ChallengeResponseDto {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  difficulty: DifficultyLevel;
-  timeLimit: number;
-  memoryLimit: number;
-  state: string;
-  createdAt: Date;
-  updatedAt: Date;
+export class ChallengeResponseDto {
+  id!: string;
+  title!: string;
+  description!: string;
+  tags!: string[];
+  difficulty!: DifficultyLevel;
+  timeLimit!: number;
+  memoryLimit!: number;
+  state!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
 }
