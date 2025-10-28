@@ -15,6 +15,17 @@ async function bootstrap() {
     .setTitle('Final de backend')
     .setDescription('API para la gestión de desafíos')
     .setVersion('2.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);

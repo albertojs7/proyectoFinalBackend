@@ -14,8 +14,10 @@ import { UpdateTestCaseUseCase } from "../application/usecases/test-cases/update
 import { ListTestCaseUseCase } from "../application/usecases/test-cases/list-test-case.uc";
 import { DeleteTestCaseUseCase } from "../application/usecases/test-cases/delete-test-case.uc";
 import { TestCaseController } from "./test-case.controller";
+import { AuthModule } from "../../auth/interface/auth.module";
 
 @Module({
+    imports: [AuthModule],
     controllers: [ChallengesController, TestCaseController],
     providers: [
         PrismaService,

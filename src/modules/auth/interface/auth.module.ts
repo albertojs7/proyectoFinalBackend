@@ -5,6 +5,8 @@ import { RegisterUserUseCase } from '../application/usecases/registerUser.usecas
 import { LoginUserUseCase } from '../application/usecases/loginUser.usecase';
 import { UserRepositoryPostgres } from '../infrastructure/db/user.repository.postgres';
 import { PrismaService } from '../../../shared/infrastructure/prisma.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { PrismaService } from '../../../shared/infrastructure/prisma.service';
   providers: [
     PrismaService,
     UserRepositoryPostgres,
+    JwtAuthGuard,
+    RolesGuard,
     {
       provide: RegisterUserUseCase,
       useFactory: (userRepository: UserRepositoryPostgres) => new RegisterUserUseCase(userRepository),
@@ -29,5 +33,6 @@ import { PrismaService } from '../../../shared/infrastructure/prisma.service';
       inject: [UserRepositoryPostgres, JwtService],
     },
   ],
+  exports: [JwtAuthGuard, RolesGuard, JwtModule],
 })
 export class AuthModule {}
