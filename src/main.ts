@@ -12,9 +12,9 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
   }));
   const config = new DocumentBuilder()
-    .setTitle('Backend')
-    .setDescription('API para ')
-    .setVersion('1.7')
+    .setTitle('Final de backend')
+    .setDescription('API para la gestión de desafíos')
+    .setVersion('2.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);
