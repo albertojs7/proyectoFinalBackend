@@ -27,7 +27,7 @@ export class Submission {
         public readonly challengeId: string,
         public readonly language: string,
         public readonly status: SubmissionStatus.QUEUED,
-        public readonly code?: string,
+        public readonly codeUrl?: string,
         createdAt?: Date,
         score : number = 0,
         timeMsTotal : number = 0,

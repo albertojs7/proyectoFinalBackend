@@ -35,7 +35,7 @@ model Submission {
   user      User @relation(fields:[userId], references: [id])
   challengeId String 
   language  String
-  code      String
+  codeUrl   String
   status    String @default("QUEUED")
   score     Int? @default(0)
   timeMsTotal   Int? @default(0)

@@ -10,9 +10,10 @@ export class CreateSubmissionUseCase {
     ) {}
 
     async execute(data: CreateSubmissionDto): Promise<Submission> {
-        const submission = new Submission(randomUUID(), data.userId, data.challengeId, data.language,  SubmissionStatus.QUEUED, data.code)
+        const submission = new Submission(randomUUID(), data.userId, data.challengeId, data.language,  SubmissionStatus.QUEUED, data.codeUrl)
         const created = await this.submissionRepo.create(submission)
-        await this.queueService.enqueue(created.id)
+        // Encolar con el codeUrl para que el worker lo procese
+        await this.queueService.enqueue(created.id, data.codeUrl)
         return created
     }   
 }
