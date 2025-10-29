@@ -1,6 +1,6 @@
 import { Worker } from 'bullmq';
 import axios from 'axios';
-import { S3Service } from '../infrastructure/s3.service';
+import { S3Service } from './modules/submission/infrastructure/s3.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
@@ -73,8 +73,8 @@ const worker = new Worker(
     },
     {
         connection: {
-            host: 'localhost', // Redis en Docker expuesto en 6380:6379
-            port: 6380, // Puerto local donde Redis está expuesto
+            host: process.env.REDIS_HOST || 'localhost',
+            port: Number(process.env.REDIS_PORT) || 6379,
         },
         concurrency: 1, // Procesar un job a la vez
     }

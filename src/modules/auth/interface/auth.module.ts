@@ -21,8 +21,6 @@ import { JwtStrategy } from '../../../shared/strategies/jwt.strategy';
     PrismaService,
     JwtStrategy,
     UserRepositoryPostgres,
-    JwtAuthGuard,
-    RolesGuard,
     {
       provide: RegisterUserUseCase,
       useFactory: (userRepository: UserRepositoryPostgres) => new RegisterUserUseCase(userRepository),

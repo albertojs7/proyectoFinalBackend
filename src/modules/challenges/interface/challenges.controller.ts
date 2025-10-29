@@ -5,8 +5,7 @@ import { ListChallengesUseCase } from '../application/usecases/challenges/list-c
 import { UpdateChallengeUseCase } from '../application/usecases/challenges/update-challenge.uc';
 import { DeleteChallengeUseCase } from '../application/usecases/challenges/delete-challenge.uc';
 import { CreateChallengeDto, UpdateChallengeDto, ChallengeResponseDto } from '../application/dtos/challenge.dto';
-
-import { JwtAuthGuard } from '../../auth/interface/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 
 
 
@@ -32,7 +31,7 @@ export class ChallengesController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('JWT')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Lists all challenges' })
   @ApiOkResponse({ description: 'List of challenges', type: [ChallengeResponseDto] })
   async list() {
@@ -59,7 +58,7 @@ export class ChallengesController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('JWT')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Deletes a challenge' })
   @ApiOkResponse({ description: 'The challenge has been deleted.' })
   async delete(@Param('id') id: string) {

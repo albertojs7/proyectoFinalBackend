@@ -13,8 +13,19 @@ async function bootstrap() {
   }));
   const config = new DocumentBuilder()
     .setTitle('Backend')
+    .setDescription('API description.')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'bearer', // Este es el nombre por defecto que coincide con @ApiBearerAuth()
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);

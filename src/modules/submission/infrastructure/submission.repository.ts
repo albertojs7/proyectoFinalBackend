@@ -1,12 +1,15 @@
 import { PrismaClient } from "@prisma/client";
+import { Injectable } from "@nestjs/common";
 import { SubmissionRepository } from "../domain/submission.repository";
 import { Submission, SubmissionStatus } from "../domain/submission.entity";
+import { PrismaService } from "../../../shared/infrastructure/prisma.service";
 
-const prisma = new PrismaClient();
-
+@Injectable()
 export class PrismaSubmissionRepository implements SubmissionRepository {
+    constructor(private readonly prisma: PrismaService) {}
+
     async create(submission: Submission): Promise<Submission> {
-        const created = await prisma.submission.create({
+        const created = await this.prisma.submission.create({
             data: {
                 userId: submission.userId,
                 challengeId: submission.challengeId,
@@ -17,8 +20,8 @@ export class PrismaSubmissionRepository implements SubmissionRepository {
                 timeMsTotal: submission.timeMsTotal ?? 0, 
             },
         })
-        return new Submission(
-            randomUUID(), 
+        return new Submission( 
+            created.id,
             created.userId, 
             created.challengeId, 
             created.language, 
@@ -31,7 +34,7 @@ export class PrismaSubmissionRepository implements SubmissionRepository {
     }
 
     async findById(id: string): Promise<Submission | null> {
-        const found = await prisma.submission.findUnique({
+        const found = await this.prisma.submission.findUnique({
             where: { id },
             include: { cases: true }
         })
@@ -39,7 +42,7 @@ export class PrismaSubmissionRepository implements SubmissionRepository {
             return null
         }
         return new Submission(
-            randomUUID(),
+            found.id,
             found.userId, 
             found.challengeId, 
             found.language, 
@@ -53,7 +56,7 @@ export class PrismaSubmissionRepository implements SubmissionRepository {
     }
 
   async updateStatus(id: string, status: Submission["status"]): Promise<void> {
-    await prisma.submission.update({
+    await this.prisma.submission.update({
       where: { id },
       data: { status }
     });

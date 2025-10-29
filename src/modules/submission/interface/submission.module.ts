@@ -6,21 +6,28 @@ import { GetPresignedUrlUseCase } from "../application/usecases/getPresignedUrl.
 import { PrismaSubmissionRepository } from "../infrastructure/submission.repository";
 import { S3Service } from "../infrastructure/s3.service";
 import { JwtModule } from "@nestjs/jwt";
-import { AuthModule } from "../../auth/interface/auth.module";
+import { JwtAuthGuard } from "../../../shared/guards/jwt-auth.guard";
+import { PrismaService } from "../../../shared/infrastructure/prisma.service";
 
 @Module({
-    imports: [JwtModule, AuthModule],
+    imports: [
+        JwtModule.register({
+            secret: process.env.JWT_SECRET || 'default-secret',
+        })
+    ],
     controllers: [SubmissionController],
     providers: [
+        PrismaService,
         PrismaSubmissionRepository,
         S3Service,
-        submissionQueue,
+        SubmissionQueue,
+        JwtAuthGuard,
         {
             provide: CreateSubmissionUseCase,
-            useFactory: (repo: PrismaSubmissionRepository, queue: submissionQueue) => {
+            useFactory: (repo: PrismaSubmissionRepository, queue: SubmissionQueue) => {
                 return new CreateSubmissionUseCase(repo, queue)
             },
-            inject: [PrismaSubmissionRepository, submissionQueue]
+            inject: [PrismaSubmissionRepository, SubmissionQueue]
         },
         {
             provide: GetPresignedUrlUseCase,

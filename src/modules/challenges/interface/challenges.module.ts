@@ -14,13 +14,19 @@ import { UpdateTestCaseUseCase } from "../application/usecases/test-cases/update
 import { ListTestCaseUseCase } from "../application/usecases/test-cases/list-test-case.uc";
 import { DeleteTestCaseUseCase } from "../application/usecases/test-cases/delete-test-case.uc";
 import { TestCaseController } from "./test-case.controller";
-import { AuthModule } from "../../auth/interface/auth.module";
+import { JwtModule } from "@nestjs/jwt";
+import { JwtAuthGuard } from "../../../shared/guards/jwt-auth.guard";
 
 @Module({
-    imports: [AuthModule],
+    imports: [
+        JwtModule.register({
+            secret: process.env.JWT_SECRET || 'default-secret',
+        })
+    ],
     controllers: [ChallengesController, TestCaseController],
     providers: [
         PrismaService,
+        JwtAuthGuard,
         {provide: TEST_CASE_REPOSITORY, useClass: PrismaTestCaseRepository },
         {provide: CHALLENGE_REPOSITORY, useClass: PrismaChallengeRepository},
         //{provide: CHALLENGE_REPOSITORY, useClass: InMemoryChallengeRepository},
