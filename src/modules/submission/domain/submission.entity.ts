@@ -22,21 +22,21 @@ export class Submission {
   public timeMsTotal: number
   public cases: SubmissionCaseResult[]
 
-  constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    public readonly challengeId: string,
-    public readonly language: string,
-    public status: SubmissionStatus,
-    public readonly code?: string,
-    createdAt?: Date,
-    score: number = 0,
-    timeMsTotal: number = 0,
-    cases: SubmissionCaseResult[] = []
-  ) {
-    this.createdAt = createdAt ?? new Date()
-    this.score = score
-    this.timeMsTotal = timeMsTotal
-    this.cases = cases
-  }
+    constructor(
+        public readonly id: string,
+        public readonly userId: string,
+        public readonly challengeId: string,
+        public readonly language: string,
+        public readonly status: SubmissionStatus.QUEUED,
+        public readonly codeUrl?: string,
+        createdAt?: Date,
+        score : number = 0,
+        timeMsTotal : number = 0,
+        cases: SubmissionCaseResult[] = []
+    ) {
+        this.createdAt = createdAt ?? new Date()
+        this.score = score
+        this.timeMsTotal = timeMsTotal
+        this.cases = cases
+    }
 }

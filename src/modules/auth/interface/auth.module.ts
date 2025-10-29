@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { RegisterUserUseCase } from '../application/usecases/registerUser.usecase';
 import { LoginUserUseCase } from '../application/usecases/loginUser.usecase';
 import { UserRepositoryPostgres } from '../infrastructure/db/user.repository.postgres';
 import { PrismaService } from '../../../shared/infrastructure/prisma.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { RolesGuard } from './guards/roles.guard';
+import { JwtStrategy } from '../../../shared/strategies/jwt.strategy';
 
 @Module({
   imports: [
+    PassportModule,
     JwtModule.register({  
         secret: process.env.JWT_SECRET || 'default-secret',
         signOptions: { expiresIn: (process.env.JWT_EXPIRES as any) || '24h' },
@@ -18,6 +19,7 @@ import { RolesGuard } from './guards/roles.guard';
   controllers: [AuthController],
   providers: [
     PrismaService,
+    JwtStrategy,
     UserRepositoryPostgres,
     JwtAuthGuard,
     RolesGuard,
@@ -33,6 +35,6 @@ import { RolesGuard } from './guards/roles.guard';
       inject: [UserRepositoryPostgres, JwtService],
     },
   ],
-  exports: [JwtAuthGuard, RolesGuard, JwtModule],
+  exports: [JwtStrategy],
 })
 export class AuthModule {}
