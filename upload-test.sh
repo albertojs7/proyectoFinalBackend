@@ -83,8 +83,50 @@ echo ""
 if [ "$HTTP_CODE" -eq 200 ]; then
     echo "✅ ¡Archivo subido exitosamente!"
     echo ""
-    echo "📍 Ubicación en S3:"
-    echo "https://codes-backend.s3.us-east-2.amazonaws.com/$(basename $FILE_TO_UPLOAD)"
+    
+    # 6. Enviar submission al backend con el codeUrl
+    echo "� Creando submission en el backend..."
+    
+    # Extraer userId del JWT (segunda parte del token decodificado)
+    IFS='.' read -r HEADER PAYLOAD SIGNATURE <<< "$JWT_TOKEN"
+    
+    # Decodificar el payload (agregar padding si es necesario)
+    PADDING=$((${#PAYLOAD} % 4))
+    if [ $PADDING -ne 0 ]; then
+        PADDING=$((4 - PADDING))
+        PAYLOAD="$PAYLOAD$(printf '%*s' $PADDING | tr ' ' '=')"
+    fi
+    
+    # Decodificar base64
+    DECODED=$(echo "$PAYLOAD" | base64 -d 2>/dev/null)
+    USER_ID=$(echo "$DECODED" | grep -o '"id":"[^"]*' | cut -d'"' -f4)
+    
+    echo "User ID extraído: $USER_ID"
+    
+    # Construir el S3 Key basado en la estructura de presigned URL
+    TIMESTAMP=$(date +%s)
+    S3_KEY="submissions/$USER_ID/$TIMESTAMP-$(basename $FILE_TO_UPLOAD)"
+    
+    # URL completa para referencia (aunque se almacena solo la key)
+    S3_URL="https://codes-backend.s3.us-east-2.amazonaws.com/$S3_KEY"
+    
+    echo "S3 Key: $S3_KEY"
+    echo "S3 URL: $S3_URL"
+    echo ""
+    
+    # Crear submission
+    SUBMISSION_RESPONSE=$(curl -s -X POST "$API_URL/submissions" \
+      -H 'Content-Type: application/json' \
+      -d '{
+        "userId": "'$USER_ID'",
+        "challengeId": "challenge-1",
+        "language": "cpp",
+        "codeUrl": "'$S3_KEY'"
+      }')
+    
+    echo "Respuesta Submission: $SUBMISSION_RESPONSE"
+    echo ""
+    echo "✅ ¡Proceso completado!"
 else
     echo "❌ Error al subir archivo (HTTP $HTTP_CODE)"
     exit 1

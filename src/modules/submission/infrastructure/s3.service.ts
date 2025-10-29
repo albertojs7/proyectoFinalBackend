@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand, GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export class S3Service {
@@ -33,6 +33,22 @@ export class S3Service {
         );
 
         console.log('Generated presigned URL:', presignedUrl.substring(0, 50) + '...');
+        return presignedUrl;
+    }
+
+    async getPresignedDownloadUrl(fileName: string): Promise<string>{
+        const command = new GetObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: fileName
+        });
+
+        const presignedUrl = await getSignedUrl(
+            this.s3Client,
+            command,
+            { expiresIn: 3600 } // 1 hora para descargar
+        );
+
+        console.log('Generated download URL:', presignedUrl.substring(0, 50) + '...');
         return presignedUrl;
     }
 }
