@@ -54,6 +54,30 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  worker:
+    build: .
+    container_name: appWorker
+    command: node dist/modules/submission/infrastructure/worker.js
+    environment:
+      DATABASE_URL: "postgresql://user:pass@db:5432/clean_nest"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      AWS_S3_PRESIGNED_EXPIRY: ${AWS_S3_PRESIGNED_EXPIRY}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
 volumes:
   db_data:
   redis_data:

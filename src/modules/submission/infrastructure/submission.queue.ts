@@ -1,5 +1,13 @@
 import { Queue } from "bullmq"
 
+export interface JobData {
+    submissionId: string;
+    codeUrl: string;
+    language: string;
+    challengeId: string;
+    userId: string;
+}
+
 export class submissionQueue {
     private queue: Queue
 
@@ -12,10 +20,7 @@ export class submissionQueue {
         })
     }
 
-    async enqueue(submissionId: string, codeUrl: string) {
-        await this.queue.add('run-submission', { 
-            submissionId,
-            codeUrl
-        })
+    async enqueue(jobData: JobData) {
+        await this.queue.add('run-submission', jobData)
     }
 }

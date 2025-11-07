@@ -2,6 +2,33 @@
 
 # Script para probar la carga de archivos a S3 usando presigned URL
 
+# Función para detectar el lenguaje según la extensión
+get_language() {
+    local file="$1"
+    local ext="${file##*.}"
+    
+    case "$ext" in
+        cpp|cc|cxx|c++)
+            echo "cpp"
+            ;;
+        py)
+            echo "python"
+            ;;
+        js)
+            echo "javascript"
+            ;;
+        java)
+            echo "java"
+            ;;
+        go)
+            echo "go"
+            ;;
+        *)
+            echo "cpp"  # default
+            ;;
+    esac
+}
+
 echo "=== S3 Upload Test Script ==="
 echo ""
 
@@ -120,7 +147,7 @@ if [ "$HTTP_CODE" -eq 200 ]; then
       -d '{
         "userId": "'$USER_ID'",
         "challengeId": "challenge-1",
-        "language": "cpp",
+        "language": "'$(get_language "$FILE_TO_UPLOAD")'",
         "codeUrl": "'$S3_KEY'"
       }')
     

@@ -1,6 +1,7 @@
 import { Worker } from 'bullmq';
 import axios from 'axios';
 import { S3Service } from '../infrastructure/s3.service';
+import { ExecutionService } from '../infrastructure/execution.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
@@ -9,6 +10,15 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const s3Service = new S3Service();
+const executionService = new ExecutionService();
+
+// Detectar si estamos en Docker o local
+// En Docker: REDIS_HOST=redis, REDIS_PORT=6379
+// En local: REDIS_HOST=localhost (o vacio), REDIS_PORT=6380
+const redisHost = process.env.REDIS_HOST || 'localhost';
+const redisPort = process.env.REDIS_HOST ? 6379 : 6380;
+
+console.log(`🔗 Conectando a Redis en ${redisHost}:${redisPort}...`);
 
 const worker = new Worker(
     'submissions',
@@ -16,7 +26,7 @@ const worker = new Worker(
         console.log(`\n🔄 Procesando job ${job.id}...`);
         console.log('Data:', job.data);
 
-        const { submissionId, codeUrl } = job.data;
+        const { submissionId, codeUrl, language, challengeId, userId } = job.data;
 
         try {
             // 1. Generar presigned URL para descargar
@@ -37,33 +47,44 @@ const worker = new Worker(
             const response = await axios.get(downloadUrl);
             const code = response.data;
             
-            console.log('✅ Código descargado:');
+            console.log('✅ Código descargado');
+            console.log('📄 Contenido:');
             console.log(code);
 
-            // 3. Crear archivo temporal
-            const tempDir = path.join(__dirname, '../temp');
-            if (!fs.existsSync(tempDir)) {
-                fs.mkdirSync(tempDir, { recursive: true });
-            }
+            // 3. Ejecutar el código en Docker
+            console.log(`\n🐳 Ejecutando código ${language}...`);
+            const executionResult = await executionService.executeInDocker(
+                code,
+                language,
+                submissionId,
+                5000 // 5 segundos de timeout
+            );
+
+            console.log(`⏱️ Tiempo de ejecución: ${executionResult.timeMs}ms`);
+            console.log(`Exit code: ${executionResult.exitCode}`);
             
-            const fileExt = path.extname(key);
-            const tempFile = path.join(tempDir, `${submissionId}${fileExt}`);
-            fs.writeFileSync(tempFile, code);
-            console.log(`📝 Archivo temporal creado: ${tempFile}`);
+            if (executionResult.success) {
+                console.log('✅ Código ejecutado exitosamente');
+                console.log('📤 Salida:');
+                console.log(executionResult.output);
+            } else {
+                console.log('❌ Error en ejecución:');
+                console.log(executionResult.error);
+            }
 
-            // 4. Ejecutar el código (ejemplo simple para CPP/Python/JS)
-            console.log('⚙️ Ejecutando código...');
-            // Aquí iría tu lógica de ejecución
-            // Por ahora solo mostramos que se descargó
-
-            // 5. Limpiar
-            fs.unlinkSync(tempFile);
-            console.log('🧹 Archivo temporal eliminado');
+            // 4. Limpiar
+            await executionService.cleanup(submissionId);
+            console.log('🧹 Archivos limpios');
 
             return {
-                success: true,
+                success: executionResult.success,
                 submissionId,
-                message: 'Código procesado exitosamente'
+                language,
+                challengeId,
+                output: executionResult.output,
+                error: executionResult.error,
+                timeMs: executionResult.timeMs,
+                exitCode: executionResult.exitCode
             };
 
         } catch (error) {
@@ -73,8 +94,8 @@ const worker = new Worker(
     },
     {
         connection: {
-            host: 'localhost', // Redis en Docker expuesto en 6380:6379
-            port: 6380, // Puerto local donde Redis está expuesto
+            host: redisHost,
+            port: redisPort,
         },
         concurrency: 1, // Procesar un job a la vez
     }
